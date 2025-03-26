@@ -5,6 +5,8 @@ st.set_page_config(page_title="Traveler Type Classifier", layout="centered")
 st.title("🚆 Traveler Type Classifier")
 
 st.markdown("""
+_With this small app, you can discover your travel personality and receive suggested rail routes that best match your traveler type for a more enriching rail experience._
+
 Please rate each statement from **1 (Not Important)** to **5 (Very Important)**.
 Your responses will help us determine what type of traveler you are!
 """)
@@ -91,18 +93,18 @@ if st.button("Classify Me!"):
     st.subheader(f"🎉 You are: {traveler_type}")
     st.info(guidance)
 
-    if st.checkbox("Show Route & Train Suggestions"):
-        suggestions = {
-            'Luxury': ["Venice Simplon-Orient-Express", "Glacier Express", "Golden Eagle Trans-Siberian", "Royal Scotsman"],
-            'Sustainability': ["Bernina Express", "West Highland Line", "Biosfera Train"],
-            'Rural': ["Danube Bike & Rail Path", "Ligurian Cycle-Rail Paths", "Loire à Vélo Rail"],
-            'Digital': ["Dutch & German Rail (Digital-First)", "Trenitalia Frecciarossa"],
-            'Health': ["Swiss/Austrian Wellness Trains", "German Quiet Zones", "Czech Spa Routes"]
-        }
-        st.markdown("**Suggested Routes:**")
-        for tag in relevant:
-            if tag in suggestions:
-                for route in suggestions[tag]:
-                    st.markdown(f"- {route}")
+    suggestions = {
+        'Luxury': ["Venice Simplon-Orient-Express", "Glacier Express", "Golden Eagle Trans-Siberian", "Royal Scotsman"],
+        'Sustainability': ["Bernina Express", "West Highland Line", "Biosfera Train"],
+        'Rural': ["Danube Bike & Rail Path", "Ligurian Cycle-Rail Paths", "Loire à Vélo Rail"],
+        'Digital': ["Dutch & German Rail (Digital-First)", "Trenitalia Frecciarossa"],
+        'Health': ["Swiss/Austrian Wellness Trains", "German Quiet Zones", "Czech Spa Routes"]
+    }
+
+    st.markdown("**Suggested Routes:**")
+    for tag in relevant:
+        if tag in suggestions:
+            for route in suggestions[tag]:
+                st.markdown(f"- {route}")
 
     st.caption("App Created by Alireza Moradpour – Based on Master's Thesis Research in Future Rail Tourism.")
