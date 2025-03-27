@@ -1,5 +1,7 @@
 
 import streamlit as st
+import matplotlib.pyplot as plt
+import numpy as np
 
 st.set_page_config(page_title="Traveler Type Classifier", layout="centered")
 st.title("🚆 Traveler Type Classifier")
@@ -106,5 +108,32 @@ if st.button("Classify Me!"):
         if tag in suggestions:
             for route in suggestions[tag]:
                 st.markdown(f"- {route}")
+
+    if st.button("📊 Compare with Survey Average"):
+        avg_scores = {
+            'Digital': 4.22,
+            'Health': 4.05,
+            'Sustainability': 3.74,
+            'Rural': 3.88,
+            'Luxury': 3.40
+        }
+        user_vals = [scores[k] for k in avg_scores]
+        avg_vals = list(avg_scores.values())
+        labels = list(avg_scores.keys())
+
+        x = np.arange(len(labels))
+        width = 0.35
+
+        fig, ax = plt.subplots()
+        ax.bar(x - width/2, user_vals, width, label='You', color='green')
+        ax.bar(x + width/2, avg_vals, width, label='Survey Avg', color='blue')
+
+        ax.set_ylabel('Average Rating')
+        ax.set_title('🔍 How Do Your Preferences Compare with Others?')
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels)
+        ax.legend()
+
+        st.pyplot(fig)
 
     st.caption("App Created by Alireza Moradpour – Based on Master's Thesis Research in Future Rail Tourism.")
