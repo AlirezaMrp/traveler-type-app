@@ -55,15 +55,10 @@ indicator_to_construct = {
 }
 
 constructs = set(indicator_to_construct.values())
-scores = {k: 0.0 for k in constructs}
 
-responses = {}
-for code, question in questionnaire.items():
-    response = st.slider(f"{code}: {question}", 1, 5, 3)
-    responses[code] = response
-    weight = indicator_weights[code]
-    construct = indicator_to_construct[code]
-    scores[construct] += response * weight
+if 'classified' not in st.session_state:
+    st.session_state.classified = False
+    st.session_state.scores = {}
 
 def classify(scores):
     top_two = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:2]
@@ -90,8 +85,24 @@ def classify(scores):
         return hybrid[key], [top1, top2]
     return base[top1], [top1]
 
+scores = {k: 0.0 for k in constructs}
+responses = {}
+for code, question in questionnaire.items():
+    response = st.slider(f"{code}: {question}", 1, 5, 3)
+    responses[code] = response
+    weight = indicator_weights[code]
+    construct = indicator_to_construct[code]
+    scores[construct] += response * weight
+
 if st.button("Classify Me!"):
-    (traveler_type, guidance), relevant = classify(scores)
+    traveler, relevant = classify(scores)
+    st.session_state.classified = True
+    st.session_state.scores = scores
+    st.session_state.traveler = traveler
+    st.session_state.relevant = relevant
+
+if st.session_state.classified:
+    traveler_type, guidance = st.session_state.traveler
     st.subheader(f"🎉 You are: {traveler_type}")
     st.info(guidance)
 
@@ -104,7 +115,7 @@ if st.button("Classify Me!"):
     }
 
     st.markdown("**Suggested Routes:**")
-    for tag in relevant:
+    for tag in st.session_state.relevant:
         if tag in suggestions:
             for route in suggestions[tag]:
                 st.markdown(f"- {route}")
@@ -117,7 +128,7 @@ if st.button("Classify Me!"):
             'Rural': 3.88,
             'Luxury': 3.40
         }
-        user_vals = [scores[k] for k in avg_scores]
+        user_vals = [st.session_state.scores.get(k, 0.0) for k in avg_scores]
         avg_vals = list(avg_scores.values())
         labels = list(avg_scores.keys())
 
